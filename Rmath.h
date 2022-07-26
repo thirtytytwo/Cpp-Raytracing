@@ -16,12 +16,18 @@ inline double degree2radians(double degree){
     return degree * pi / 180.0;
 }
 
-inline double ramdom_double(){
+inline double random_double(){
     return rand()/ (RAND_MAX + 1.0);
 }
 
-inline double ramdom_double(int min, int max){
-    return min + (max - min) * ramdom_double();
+inline double random_double(int min, int max){
+    return min + (max - min) * random_double();
+}
+
+inline double clamp(double x, double min, double max){
+    if(x < min) return min;
+    if(x > max) return max;
+    return x;
 }
 
 #include "Ray.h"

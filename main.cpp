@@ -2,6 +2,7 @@
 #include "Color.h"
 #include "HittableList.h"
 #include "Sphere.h"
+#include "Camera.h"
 
 #include <iostream>
 
@@ -20,31 +21,26 @@ int main(int argc, const char * argv[]){
     const double aspect_ratio = 16.0 / 9.0;
     const int width = 400;
     const int height = static_cast<int>(width / aspect_ratio);
+    const int samples_per_pixel = 100;
     //WorldObject
     Hittable_list world;
     world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
     world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
     //Camera
-    double viewport_height = 2.0;
-    double viewport_width = aspect_ratio * viewport_height;
-    double focal_length = 1.0;//摄像机和视口的距离，znear(可能是)
-
-    point3 origin = point3(0,0,0);
-    vec3 horizontal = vec3(viewport_width,0,0);
-    vec3 vertical = vec3(0,viewport_height,0);
-    //视口左下角坐标
-    point3 bottom_left_corner = origin - horizontal/2 - vertical/2 - vec3(0,0,focal_length);
-
+    camera cam;
     //Render
     std::cout<< "P3\n" << width << ' ' << height << "\n255\n";
     for (int j = height; j >= 0; --j) {
         for (int i = 0; i < width; ++i) {
-            //获取一个像素大小
-            double u = double(i) / (width - 1);
-            double v = double(j) / (height - 1);
-            ray r = ray(origin,bottom_left_corner + u * horizontal + v * vertical - origin);
-            color pixel_color = ray_color(r, world);
-            write_color(std::cout, pixel_color);
+            color pixel_color(0,0,0);
+            //抗锯齿方法，类似msaa，不过是采用在一个像素点随机位置采样给定次
+            for(int s = 0; s < samples_per_pixel; ++s){
+                auto u = (i + random_double()) / (width - 1);
+                auto v = (j + random_double()) / (height - 1);
+                ray r = cam.get_ray(u, v);
+                pixel_color += ray_color(r, world);
+            }
+            write_color(std::cout, pixel_color, samples_per_pixel);
         }
     }
 }
