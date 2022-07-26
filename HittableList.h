@@ -32,7 +32,7 @@ bool Hittable_list::hit(const ray& r, double t_min, double t_max, hit_record& re
     for (const auto& object : objects) {
         if (object->hit(r, t_min, closest_so_far, temp_rec)) {
             hit_anything = true;
-            closest_so_far = temp_rec.t;
+            closest_so_far = temp_rec.t;//找出这个列表中的所有物体和光线最近的相交
             rec = temp_rec;
         }
     }

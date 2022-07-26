@@ -17,7 +17,7 @@ public:
 
 bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) const{
     vec3 oc = r.origin() - center;
-    auto a = dot(r.direction(), r.direction());
+    auto a = r.direction().length_squared();
     auto h_b = dot(r.direction(), oc);
     auto c = oc.length_squared() - radius * radius;
 
@@ -27,9 +27,9 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) cons
 
     //找到在tmin和tmax之间的可行光线
     auto root = (-h_b - sqrted) / a;//求根公式
-    if(root < t_min || root < t_max){
+    if(root < t_min || t_max < root){
         root = (-h_b + sqrted) / a;
-        if(root < t_min || root < t_max) return false;
+        if(root < t_min || t_max < root) return false;
     }
 
     rec.t = root;
