@@ -55,6 +55,11 @@ public:
         return std::sqrt(length_squared());
     }
 
+    bool nera_zero() const{
+        const auto s = 1e-8;
+        return(fabs(e[0]) < s) && (fabs(e[1]) < s) && (fabs(e[2]) < s);
+    }
+
 };
 
 using point3 = vec3;
@@ -110,5 +115,15 @@ vec3 random_in_unit_sphere(){
         if(p.length_squared() >= 1) continue;
         return p;
     }
+}
+vec3 random_unit_vector(){
+    auto a = random_double(0, 2 * pi);
+    auto z = random_double(-1, 1);
+    auto r = sqrt(1- z * z);
+    return vec3(r * cos(a), r * sin(a), z);
+}
+//镜面反射的计算
+vec3 reflect(const vec3 &v, const vec3 &n){
+    return v - 2 * dot(v, n) * n;
 }
 #endif
