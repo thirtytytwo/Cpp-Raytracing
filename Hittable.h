@@ -2,7 +2,8 @@
 #define HITTABLE_H
 
 #include "Rmath.h"
-#include "Material.h"
+
+class Material;
 
 struct hit_record {
     point3 p;
